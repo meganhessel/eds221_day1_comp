@@ -77,9 +77,51 @@ toolik_temp_plot
 ## Export a figure
 
 ```{r}
-ggsave(here::here("figs", "toolik_temp_plot.png"), height = 6, width = 7)
+ggsave(here::here("Figs", "toolik_temp_plot.png"), height = 6, width = 7)
 ```
 
 Now try changing something about the ggplot code, and re-run your `ggsave()` line above. Does your saved figure change? Great!
 
 ## End Example 1
+
+## start Example 2
+ 
+ first, read in chlorophyll add 
+```{r}
+# reading in data 
+toolik_chlorophyll <- read_csv(here::here("data", "data-raw", "toolik_chlorophyll.csv"))
+
+# get a data overview
+skimr::skim(toolik_chlorophyll)
+dim(toolik_chlorophyll)
+names(toolik_chlorophyll)
+
+# clean up the column names with Janitor 
+toolik_chlorophyll <- toolik_chlorophyll %>% clean_names()
+
+# replace missing values with n/a 
+toolik_chlorophyll$active_chl_a_ug_l <- na_if(toolik_chlorophyll$active_chl_a_ug_l, ".")
+
+#convert chlorophyll data into numeric 
+toolik_chlorophyll$active_chl_a_ug_l <- as.numeric(toolik_chlorophyll$active_chl_a_ug_l)
+```
+ 
+ 
+```{r}
+#plot it! 
+toolik_chlorophyll_plot <- ggplot(data = toolik_chlorophyll, 
+       aes(x = depth, y = active_chl_a_ug_l)) +
+  geom_point() + 
+  theme_minimal() +
+  labs(title = "Toolik Lake Chlorophyll a Concentration", 
+       x = "Depth (m)", 
+       y = "Chorophyll a concentration (micrograms per liter)")
+
+toolik_chlorophyll_plot
+
+# save plot 
+ggsave(here::here("Figs", "toolik_chlorophyll_plot.png"), height = 6, width = 7)
+```
+ 
+
+
